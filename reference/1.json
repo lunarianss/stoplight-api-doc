@@ -1,9 +1,8 @@
 {
-  "openapi": "3.1.1",
+  "openapi": "3.0.4",
   "info": {
-    "title": "Complete OpenAPI 3.1 Example API",
-    "summary": "A comprehensive example demonstrating all OpenAPI 3.1 specification fields",
-    "description": "This API specification showcases all available fields defined in the OpenAPI 3.1.1 specification. It serves as a reference implementation for API designers and developers.\n\n## Features\n- Complete field coverage\n- Multiple authentication schemes\n- Comprehensive data models\n- Example webhooks and callbacks",
+    "title": "Complete OpenAPI 3.0 Example API",
+    "description": "This API specification showcases all available fields defined in the OpenAPI 3.0.4 specification. It serves as a reference implementation for API designers and developers.\n\n## Features\n- Complete field coverage\n- Multiple authentication schemes\n- Comprehensive data models\n- Example callbacks",
     "termsOfService": "https://example.com/terms/",
     "contact": {
       "name": "API Support Team",
@@ -12,14 +11,12 @@
     },
     "license": {
       "name": "Apache 2.0",
-      "identifier": "Apache-2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
     "version": "1.0.1",
     "x-api-id": "complete-example-api",
     "x-audience": "external"
   },
-  "jsonSchemaDialect": "https://spec.openapis.org/oas/3.1/dialect/base",
   "servers": [
     {
       "url": "https://{environment}.example.com:{port}/{basePath}",
@@ -27,7 +24,7 @@
       "variables": {
         "environment": {
           "default": "api",
-          "description": "Server environment - api for production, api-staging for staging",
+          "description": "Server environment",
           "enum": ["api", "api-staging", "api-dev"]
         },
         "port": {
@@ -39,8 +36,7 @@
           "default": "v1",
           "description": "API version path segment"
         }
-      },
-      "x-server-region": "us-east-1"
+      }
     },
     {
       "url": "https://backup.example.com/v1",
@@ -73,7 +69,7 @@
       "get": {
         "tags": ["Users", "Admin"],
         "summary": "List all users",
-        "description": "Retrieve a paginated list of all users in the system. Requires admin privileges.\n\nSupports filtering, sorting, and pagination.",
+        "description": "Retrieve a paginated list of all users in the system",
         "operationId": "listUsers",
         "parameters": [
           {
@@ -176,7 +172,7 @@
               },
               "ETag": {
                 "description": "Entity tag for cache validation",
-                "required": false,
+                "required": true,
                 "content": {
                   "text/plain": {
                     "schema": {
@@ -255,9 +251,7 @@
           "description": "Find more information about user listing",
           "url": "https://docs.example.com/users/list"
         },
-        "deprecated": false,
-        "x-internal": false,
-        "x-rate-limit": "1000 per hour"
+        "deprecated": false
       },
       "post": {
         "tags": ["Users"],
@@ -604,13 +598,13 @@
                   },
                   "file": {
                     "type": "string",
-                    "contentMediaType": "application/octet-stream"
+                    "format": "binary"
                   },
                   "files": {
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "contentMediaType": "application/octet-stream"
+                      "format": "binary"
                     }
                   },
                   "metadata": {
@@ -666,30 +660,6 @@
       }
     }
   },
-  "webhooks": {
-    "newUserWebhook": {
-      "post": {
-        "summary": "New user webhook",
-        "description": "Triggered when a new user is registered",
-        "requestBody": {
-          "description": "Information about the new user",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserEvent"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Webhook received successfully"
-          }
-        }
-      }
-    }
-  },
   "components": {
     "schemas": {
       "User": {
@@ -701,21 +671,18 @@
             "type": "integer",
             "format": "int64",
             "description": "Unique identifier",
-            "readOnly": true,
-            "examples": [12345, 67890]
+            "readOnly": true
           },
           "name": {
             "type": "string",
             "description": "User's full name",
             "minLength": 1,
-            "maxLength": 100,
-            "examples": ["John Doe"]
+            "maxLength": 100
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "User's email address",
-            "examples": ["[email protected]"]
+            "description": "User's email address"
           },
           "status": {
             "type": "string",
@@ -725,31 +692,15 @@
           },
           "role": {
             "type": "string",
-            "description": "User role",
-            "oneOf": [
-              {
-                "const": "admin",
-                "title": "Administrator",
-                "description": "Full system access"
-              },
-              {
-                "const": "user",
-                "title": "Regular User",
-                "description": "Standard user access"
-              },
-              {
-                "const": "guest",
-                "title": "Guest",
-                "description": "Limited read-only access"
-              }
-            ]
+            "description": "User role"
           },
           "age": {
             "type": "integer",
             "format": "int32",
             "minimum": 18,
             "maximum": 120,
-            "description": "User's age"
+            "description": "User's age",
+            "nullable": true
           },
           "balance": {
             "type": "number",
@@ -771,7 +722,8 @@
           "birthday": {
             "type": "string",
             "format": "date",
-            "description": "User's date of birth"
+            "description": "User's date of birth",
+            "nullable": true
           },
           "metadata": {
             "type": "object",
@@ -790,8 +742,7 @@
           },
           "avatar": {
             "type": "string",
-            "contentMediaType": "image/png",
-            "contentEncoding": "base64",
+            "format": "byte",
             "description": "Base64-encoded avatar image"
           },
           "preferences": {
@@ -814,15 +765,13 @@
           "description": "User schema documentation",
           "url": "https://docs.example.com/schemas/user"
         },
-        "examples": [
-          {
-            "id": 1,
-            "name": "John Doe",
-            "email": "[email protected]",
-            "status": "active",
-            "role": "user"
-          }
-        ]
+        "example": {
+          "id": 1,
+          "name": "John Doe",
+          "email": "[email protected]",
+          "status": "active",
+          "role": "user"
+        }
       },
       "AdminUser": {
         "allOf": [
@@ -887,7 +836,8 @@
           },
           "age": {
             "type": "integer",
-            "minimum": 18
+            "minimum": 18,
+            "nullable": true
           },
           "callbackUrl": {
             "type": "string",
@@ -990,8 +940,6 @@
         }
       },
       "Pet": {
-        "$id": "https://example.com/schemas/pet",
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "discriminator": {
           "propertyName": "petType"
@@ -1323,10 +1271,6 @@
         "type": "openIdConnect",
         "openIdConnectUrl": "https://example.com/.well-known/openid-configuration",
         "description": "OpenID Connect authentication"
-      },
-      "MutualTLS": {
-        "type": "mutualTLS",
-        "description": "Mutual TLS authentication with client certificate"
       }
     },
     "links": {
@@ -1370,32 +1314,6 @@
           }
         }
       }
-    },
-    "pathItems": {
-      "/health": {
-        "get": {
-          "summary": "Health check",
-          "description": "Check API health status",
-          "responses": {
-            "200": {
-              "description": "API is healthy",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "status": {
-                        "type": "string",
-                        "enum": ["healthy", "degraded", "unhealthy"]
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "security": [
@@ -1432,16 +1350,5 @@
   "externalDocs": {
     "description": "Complete API documentation",
     "url": "https://docs.example.com"
-  },
-  "x-api-id": "complete-example-api",
-  "x-tagGroups": [
-    {
-      "name": "User Management",
-      "tags": ["Users", "Admin"]
-    },
-    {
-      "name": "File Operations",
-      "tags": ["Files"]
-    }
-  ]
+  }
 }
